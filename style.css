@@ -1,0 +1,80 @@
+/* Reset CSS dasar */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Plus Jakarta Sans", sans-serif; }
+
+body, html {
+    height: 100%;
+    color: #fff; /* Warna teks putih agar kontras dengan background gelap */
+    overflow: hidden; /* Mencegah scroll jika tidak diperlukan di halaman utama */
+}
+
+/* Container utama dengan background image */
+.hero-container {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* Gaya untuk judul utama */
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Sedikit bayangan agar teks lebih terbaca */
+    animation: fadeInDown 1s ease-out; /* Animasi masuk */
+}
+
+/* Gaya untuk deskripsi */
+.hero-description {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    animation: fadeInUp 1s ease-out 0.5s both; /* Animasi masuk dengan delay */
+}
+
+/* Gaya untuk tombol mulai */
+.start-button {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: #E74C3C; /* Warna merah yang mencolok */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none; /* Menghilangkan garis bawah pada link */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+    animation: fadeInUp 1s ease-out 1s both; /* Animasi masuk dengan delay lebih lama */
+}
+
+.start-button:hover {
+    background-color: #C0392B; /* Warna sedikit lebih gelap saat di-hover */
+    transform: translateY(-3px); /* Efek tombol naik sedikit saat di-hover */
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+}
+
+/* Definisi animasi sederhana */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsivitas untuk layar kecil (mobile) */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.2rem; }
+    .hero-description { font-size: 1rem; }
+}

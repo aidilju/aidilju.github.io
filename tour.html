@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Galeri Panorama 360 VR</title>
+    <meta name="description" content="Tugas VR dengan 13 Panorama">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+
+<body>
+    <audio controls autoplay hidden>
+        <source src="sound/Angin_Mamiri.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <a-scene id="scene">
+        <a-assets>
+            <img id="pano-1" src="images/pano1.jpg" crossorigin="anonymous">
+            <img id="pano-2" src="images/pano2.jpg" crossorigin="anonymous">
+            <img id="pano-3" src="images/pano3.jpg" crossorigin="anonymous">
+            <img id="pano-4" src="images/pano4.jpg" crossorigin="anonymous">
+            <img id="pano-5" src="images/pano5.jpg" crossorigin="anonymous">
+            <img id="pano-6" src="images/pano6.jpg" crossorigin="anonymous">
+            <img id="pano-7" src="images/pano7.jpg" crossorigin="anonymous">
+            <img id="pano-8" src="images/pano8.jpg" crossorigin="anonymous">
+            <img id="pano-9" src="images/pano9.jpg" crossorigin="anonymous">
+            <img id="pano-10" src="images/pano10.jpg" crossorigin="anonymous">
+            <img id="pano-11" src="images/pano11.jpg" crossorigin="anonymous">
+            <img id="pano-12" src="images/pano12.jpg" crossorigin="anonymous">
+            <img id="pano-13" src="images/pano13.jpg" crossorigin="anonymous">
+        </a-assets>
+
+        <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"></a-sky>
+
+        <a-entity id="rig">
+            <a-entity camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
+            </a-entity>
+            <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left">
+            </a-entity>
+            <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right">
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <script>
+        const panoramas = [
+            '#pano-1', '#pano-2', '#pano-3', '#pano-4', '#pano-5',
+            '#pano-6', '#pano-7', '#pano-8', '#pano-9', '#pano-10',
+            '#pano-11', '#pano-12', '#pano-13'
+        ];
+
+        // DIUBAH: Disesuaikan agar sinkron dengan <a-sky> di HTML
+        let currentIndex = 0;
+
+        // Fungsi untuk ganti gambar (tidak berubah)
+        function setPanorama(index) {
+            if (index < 0) {
+                index = panoramas.length - 1;
+            } else if (index >= panoramas.length) {
+                index = 0;
+            }
+            currentIndex = index;
+            const sky = document.querySelector('#panorama-sky');
+            const newImageSrc = panoramas[currentIndex];
+            console.log(`Mengganti ke gambar: ${newImageSrc}`);
+            sky.setAttribute('src', newImageSrc);
+        }
+
+        // Fungsi simpel untuk panggil "Next"
+        function goNext() {
+            // --- BLOK KODE BARU ---
+            // Cek apakah musik belum berputar
+            if (!isMusicPlaying) {
+                // Ambil 'scene' dan mainkan suaranya
+                const sceneEl = document.querySelector('#scene');
+            }
+            // --- AKHIR BLOK KODE BARU ---
+
+            // Pindah ke gambar selanjutnya
+            setPanorama(currentIndex + 1);
+        }
+
+        // Event listener (tidak berubah, semua event akan memanggil goNext)
+        document.addEventListener('DOMContentLoaded', () => {
+            const scene = document.querySelector('#scene');
+            const leftHand = document.querySelector('#left-hand');
+            const rightHand = document.querySelector('#right-hand');
+
+            scene.addEventListener('click', goNext);
+            leftHand.addEventListener('triggerdown', goNext);
+            rightHand.addEventListener('triggerdown', goNext);
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    goNext();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
