@@ -6,8 +6,93 @@
     <title>Main Menu Virtual Tour Pantai Losari</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background: linear-gradient(135deg, #0099ff 0%, #00d4ff 100%);
+            overflow: hidden;
+            color: white;
+        }
+
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .start-button {
+            background: white;
+            color: #0078d4;
+            padding: 0.9rem 2rem;
+            border-radius: 999px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+        }
+
+        .start-button:hover {
+            background: #e0f2ff;
+            transform: scale(1.05);
+        }
+
+        /* === Efek Portal === */
+        .portal-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 9999;
+            background: radial-gradient(circle, rgba(255,255,255,0) 40%, rgba(0,0,0,0.8) 100%);
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .portal-ring {
+            width: 150px;
+            height: 150px;
+            border: 4px solid rgba(255,255,255,0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 60px 20px rgba(0,255,255,0.8), inset 0 0 40px rgba(0,200,255,0.6);
+            transform: scale(0);
+            animation: portalExpand 2s ease-in-out forwards;
+        }
+
+        @keyframes portalExpand {
+            0% { transform: scale(0); opacity: 1; }
+            60% { transform: scale(15); opacity: 1; }
+            100% { transform: scale(60); opacity: 0; }
+        }
+
+        .portal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
 </head>
 <body>
     <main class="hero-container">
@@ -17,7 +102,31 @@
             Jelajahi anjungan, saksikan matahari terbenam yang memukau, 
             dan rasakan suasana khas Pantai Losari melalui pengalaman tur virtual 360 derajat kami.
         </p>
-        <a href="tour.html" class="start-button">Mulai Tur Virtual</a>
+        <a href="#" id="startButton" class="start-button">Mulai Tur Virtual</a>
     </main>
+
+    <div id="portalOverlay" class="portal-overlay">
+        <div class="portal-ring"></div>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const portalOverlay = document.getElementById('portalOverlay');
+
+        startButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            portalOverlay.classList.add('active');
+
+            // Mainkan efek suara portal (opsional)
+            const audio = new Audio('sound/portal.mp3');
+            audio.volume = 0.7;
+            audio.play();
+
+            // Tunggu animasi selesai baru pindah halaman
+            setTimeout(() => {
+                window.location.href = "tour.html";
+            }, 1800);
+        });
+    </script>
 </body>
 </html>
