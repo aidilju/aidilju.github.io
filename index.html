@@ -1,132 +1,121 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Menu Virtual Tour Pantai Losari</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: "Plus Jakarta Sans", sans-serif;
-            background: linear-gradient(135deg, #0099ff 0%, #00d4ff 100%);
-            overflow: hidden;
-            color: white;
-        }
+  <title>Galeri Panorama 360 VR</title>
+  <meta name="description" content="Tugas VR dengan 13 Panorama">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-        .hero-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .hero-title {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        }
-
-        .hero-description {
-            font-size: 1.2rem;
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-
-        .start-button {
-            background: white;
-            color: #0078d4;
-            padding: 0.9rem 2rem;
-            border-radius: 999px;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.3);
-        }
-
-        .start-button:hover {
-            background: #e0f2ff;
-            transform: scale(1.05);
-        }
-
-        /* === Efek Portal === */
-        .portal-overlay {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            z-index: 9999;
-            background: radial-gradient(circle, rgba(255,255,255,0) 40%, rgba(0,0,0,0.8) 100%);
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-        }
-
-        .portal-ring {
-            width: 150px;
-            height: 150px;
-            border: 4px solid rgba(255,255,255,0.8);
-            border-radius: 50%;
-            box-shadow: 0 0 60px 20px rgba(0,255,255,0.8), inset 0 0 40px rgba(0,200,255,0.6);
-            transform: scale(0);
-            animation: portalExpand 2s ease-in-out forwards;
-        }
-
-        @keyframes portalExpand {
-            0% { transform: scale(0); opacity: 1; }
-            60% { transform: scale(15); opacity: 1; }
-            100% { transform: scale(60); opacity: 0; }
-        }
-
-        .portal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-    </style>
+  <!-- CSS eksternal kamu -->
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <main class="hero-container">
-        <h1 class="hero-title">Selamat Datang di Pantai Losari</h1>
-        <p class="hero-description">
-            Nikmati keindahan ikon kota Makassar dari kenyamanan layar Anda. 
-            Jelajahi anjungan, saksikan matahari terbenam yang memukau, 
-            dan rasakan suasana khas Pantai Losari melalui pengalaman tur virtual 360 derajat kami.
-        </p>
-        <a href="#" id="startButton" class="start-button">Mulai Tur Virtual</a>
-    </main>
 
-    <div id="portalOverlay" class="portal-overlay">
-        <div class="portal-ring"></div>
-    </div>
+  <a-scene id="scene" sound="src: #bgm; loop: true; volume: 0.5">
+    <a-assets>
+      <audio id="bgm" src="anging_mammiri.m4a" preload="auto"></audio>
 
-    <script>
-        const startButton = document.getElementById('startButton');
-        const portalOverlay = document.getElementById('portalOverlay');
+      <img id="pano-1" src="images/pano1.jpg" crossorigin="anonymous">
+      <img id="pano-2" src="images/pano2.jpg" crossorigin="anonymous">
+      <img id="pano-3" src="images/pano3.jpg" crossorigin="anonymous">
+      <img id="pano-4" src="images/pano4.jpg" crossorigin="anonymous">
+      <img id="pano-5" src="images/pano5.jpg" crossorigin="anonymous">
+      <img id="pano-6" src="images/pano6.jpg" crossorigin="anonymous">
+      <img id="pano-7" src="images/pano7.jpg" crossorigin="anonymous">
+      <img id="pano-8" src="images/pano8.jpg" crossorigin="anonymous">
+      <img id="pano-9" src="images/pano9.jpg" crossorigin="anonymous">
+      <img id="pano-10" src="images/pano10.jpg" crossorigin="anonymous">
+      <img id="pano-11" src="images/pano11.jpg" crossorigin="anonymous">
+      <img id="pano-12" src="images/pano12.jpg" crossorigin="anonymous">
+      <img id="pano-13" src="images/pano13.jpg" crossorigin="anonymous">
+    </a-assets>
 
-        startButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            portalOverlay.classList.add('active');
+    <!-- Panorama utama -->
+    <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"
+      animation__fadeout="property: material.opacity; from: 1; to: 0; dur: 600; startEvents: fadeout"
+      animation__fadein="property: material.opacity; from: 0; to: 1; dur: 600; startEvents: fadein">
+    </a-sky>
 
-            // Mainkan efek suara portal (opsional)
-            const audio = new Audio('sound/portal.mp3');
-            audio.volume = 0.7;
-            audio.play();
+    <!-- Kamera dan cursor -->
+    <a-entity id="rig">
+      <a-entity camera position="0 1.6 0" look-controls>
+        <a-cursor color="white" fuse="true" fuse-timeout="1000"></a-cursor>
+      </a-entity>
+    </a-entity>
 
-            // Tunggu animasi selesai baru pindah halaman
-            setTimeout(() => {
-                window.location.href = "tour.html";
-            }, 1800);
+    <!-- Container untuk hotspot -->
+    <a-entity id="hotspotContainer"></a-entity>
+  </a-scene>
+
+  <script>
+    const panoramas = [
+      '#pano-1', '#pano-2', '#pano-3', '#pano-4', '#pano-5',
+      '#pano-6', '#pano-7', '#pano-8', '#pano-9', '#pano-10',
+      '#pano-11', '#pano-12', '#pano-13'
+    ];
+
+    let currentIndex = 0;
+    let isMusicPlaying = false;
+
+    const sceneEl = document.querySelector('#scene');
+    const sky = document.querySelector('#panorama-sky');
+    const hotspotContainer = document.querySelector('#hotspotContainer');
+
+    function changePanorama(index) {
+      if (index < 0) index = panoramas.length - 1;
+      if (index >= panoramas.length) index = 0;
+      currentIndex = index;
+
+      sky.emit('fadeout');
+      setTimeout(() => {
+        sky.setAttribute('src', panoramas[currentIndex]);
+        sky.emit('fadein');
+        createHotspots();
+      }, 600);
+    }
+
+    function createHotspots() {
+      hotspotContainer.innerHTML = '';
+
+      const next = document.createElement('a-entity');
+      next.setAttribute('geometry', 'primitive: circle; radius: 0.3');
+      next.setAttribute('material', 'color: white; opacity: 0.7');
+      next.setAttribute('position', '-2 0 -3');
+      next.setAttribute('rotation', '0 30 0');
+      next.setAttribute('class', 'clickable');
+      next.setAttribute('data-index', currentIndex + 1);
+      hotspotContainer.appendChild(next);
+
+      const prev = document.createElement('a-entity');
+      prev.setAttribute('geometry', 'primitive: circle; radius: 0.3');
+      prev.setAttribute('material', 'color: white; opacity: 0.7');
+      prev.setAttribute('position', '2 0 -3');
+      prev.setAttribute('rotation', '0 -30 0');
+      prev.setAttribute('class', 'clickable');
+      prev.setAttribute('data-index', currentIndex - 1);
+      hotspotContainer.appendChild(prev);
+
+      // Interaksi lewat gaze
+      hotspotContainer.querySelectorAll('.clickable').forEach(spot => {
+        spot.addEventListener('mouseenter', function () {
+          if (!isMusicPlaying) {
+            sceneEl.components.sound.playSound();
+            isMusicPlaying = true;
+          }
+          const targetIndex = parseInt(this.getAttribute('data-index'));
+          changePanorama(targetIndex);
         });
-    </script>
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createHotspots();
+    });
+  </script>
+
 </body>
 </html>
