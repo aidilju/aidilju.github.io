@@ -21,7 +21,7 @@
 </head>
 
 <body>
-  <audio autoplay hidden loop>
+  <audio autoplay hidden loop>a
     <source src="sound/Angin_Mamiri.mp3" type="audio/mpeg" />
   </audio>
 
@@ -44,7 +44,7 @@
     </a-assets>
 
     <!-- Sky -->
-    <a-sky id="sky" src="#pano-1"></a-sky>
+    <a-sky id="sky" src="#pano-1" rotation="0 -90 0"></a-sky>
 
     <!-- Hotspot kiri -->
     <a-entity id="leftHotspot" position="-2 0 -2" rotation="0 45 0">
@@ -59,7 +59,7 @@
     </a-entity>
 
     <!-- Kamera -->
-    <a-entity camera look-controls position="0 1.6 0">
+    <a-entity camera look-controls position="0 1.6 0" rotation="0 0 0">
       <a-entity 
         cursor="fuse: true; fuseTimeout: 1000"
         position="0 0 -1"
@@ -137,3 +137,4 @@
   </script>
 </body>
 </html>
+
