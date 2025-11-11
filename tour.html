@@ -27,18 +27,18 @@
 
   <style>
     body { margin: 0; overflow: hidden; }
-    .a-canvas { cursor: crosshair; } /* tampilkan titik di tengah */
+    .a-canvas { cursor: crosshair; } /* tampilkan titik tengah */
   </style>
 </head>
 
 <body>
-  <!-- Musik Latar -->
+  <!-- Musik -->
   <audio autoplay loop hidden>
     <source src="sound/Angin_Mamiri.mp3" type="audio/mpeg">
   </audio>
 
   <a-scene id="scene">
-    <!-- Gambar Panorama -->
+    <!-- Aset panorama -->
     <a-assets>
       <img id="pano-1" src="images/pano1.jpg">
       <img id="pano-2" src="images/pano2.jpg">
@@ -55,46 +55,26 @@
       <img id="pano-13" src="images/pano13.jpg">
     </a-assets>
 
-    <!-- Latar Langit -->
+    <!-- Sky panorama -->
     <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"
-      animation__fadein="property: components.material.material.opacity; from: 0; to: 1; dur: 1000; startEvents: fade-in"
-      animation__fadeout="property: components.material.material.opacity; from: 1; to: 0; dur: 1000; startEvents: fade-out">
+      animation__fadein="property: components.material.material.opacity; from: 0; to: 1; dur: 800; startEvents: fade-in"
+      animation__fadeout="property: components.material.material.opacity; from: 1; to: 0; dur: 800; startEvents: fade-out">
     </a-sky>
 
-    <!-- Kamera dan Cursor -->
+    <!-- Kamera dan cursor -->
     <a-entity id="rig">
       <a-entity id="camera" camera look-controls position="0 1.6 0">
-        <a-entity cursor="fuse: true; fuseTimeout: 1000"
-                  position="0 0 -1"
-                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-                  material="color: white; shader: flat; opacity: 0.8">
+        <a-entity 
+          cursor="fuse: true; fuseTimeout: 1000"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: white; shader: flat; opacity: 0.8">
         </a-entity>
       </a-entity>
     </a-entity>
 
-    <!-- Hotspot NEXT (kanan serong) -->
-    <a-entity id="next-spot"
-      geometry="primitive: circle; radius: 0.4"
-      material="color: #E74C3C; opacity: 0.7; shader: flat"
-      rotation="-90 45 0"
-      position="1 -1.5 -2"
-      class="clickable"
-      scale="1 1 1"
-      animation__hover="property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300"
-      animation__unhover="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300">
-    </a-entity>
-
-    <!-- Hotspot PREV (kiri serong) -->
-    <a-entity id="prev-spot"
-      geometry="primitive: circle; radius: 0.4"
-      material="color: #3498DB; opacity: 0.7; shader: flat"
-      rotation="-90 -45 0"
-      position="-1 -1.5 -2"
-      class="clickable"
-      scale="1 1 1"
-      animation__hover="property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300"
-      animation__unhover="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300">
-    </a-entity>
+    <!-- Container hotspot (dibuat ulang tiap kali panorama berubah) -->
+    <a-entity id="hotspot-container"></a-entity>
   </a-scene>
 
   <script>
@@ -106,22 +86,49 @@
 
     let currentIndex = 0;
     const sky = document.querySelector('#panorama-sky');
+    const hotspotContainer = document.querySelector('#hotspot-container');
+
+    function createHotspots() {
+      hotspotContainer.innerHTML = ''; // hapus hotspot lama
+
+      // --- Hotspot NEXT (kanan serong) ---
+      const nextSpot = document.createElement('a-entity');
+      nextSpot.setAttribute('geometry', 'primitive: circle; radius: 0.4');
+      nextSpot.setAttribute('material', 'color: #E74C3C; opacity: 0.7; shader: flat');
+      nextSpot.setAttribute('rotation', '-90 45 0');
+      nextSpot.setAttribute('position', '1 -1.5 -2');
+      nextSpot.setAttribute('scale', '1 1 1');
+      nextSpot.setAttribute('animation__hover', 'property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300');
+      nextSpot.setAttribute('animation__unhover', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300');
+      nextSpot.addEventListener('mouseenter', () => setPanorama(currentIndex + 1));
+
+      // --- Hotspot PREV (kiri serong) ---
+      const prevSpot = document.createElement('a-entity');
+      prevSpot.setAttribute('geometry', 'primitive: circle; radius: 0.4');
+      prevSpot.setAttribute('material', 'color: #3498DB; opacity: 0.7; shader: flat');
+      prevSpot.setAttribute('rotation', '-90 -45 0');
+      prevSpot.setAttribute('position', '-1 -1.5 -2');
+      prevSpot.setAttribute('scale', '1 1 1');
+      prevSpot.setAttribute('animation__hover', 'property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300');
+      prevSpot.setAttribute('animation__unhover', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300');
+      prevSpot.addEventListener('mouseenter', () => setPanorama(currentIndex - 1));
+
+      hotspotContainer.appendChild(nextSpot);
+      hotspotContainer.appendChild(prevSpot);
+    }
 
     function setPanorama(index) {
       if (index < 0) index = panoramas.length - 1;
       if (index >= panoramas.length) index = 0;
       currentIndex = index;
       sky.setAttribute('fade-transition', { to: panoramas[currentIndex] });
+
+      // Buat ulang hotspot setelah transisi
+      setTimeout(createHotspots, 900);
     }
 
-    // Event ketika kursor diarahkan ke hotspot
-    document.querySelector('#next-spot').addEventListener('mouseenter', () => {
-      setPanorama(currentIndex + 1);
-    });
-
-    document.querySelector('#prev-spot').addEventListener('mouseenter', () => {
-      setPanorama(currentIndex - 1);
-    });
+    // Pertama kali buat hotspot
+    createHotspots();
   </script>
 </body>
 </html>
