@@ -9,27 +9,25 @@
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-  <!-- Efek Fade -->
+  <!-- Komponen Fade Transisi -->
   <script>
     AFRAME.registerComponent('fade-transition', {
-      schema: {
-        to: {type: 'string'}
-      },
-      init: function() {
+      schema: { to: { type: 'string' } },
+      init: function () {
         const el = this.el;
         const data = this.data;
         el.emit('fade-out');
         setTimeout(() => {
           el.setAttribute('src', data.to);
           el.emit('fade-in');
-        }, 1000); // Durasi fade-out sebelum ganti panorama
+        }, 800);
       }
     });
   </script>
 
   <style>
     body { margin: 0; overflow: hidden; }
-    .a-canvas { cursor: crosshair; } /* tampilkan titik tengah */
+    .a-canvas { cursor: crosshair; } /* tampilkan titik di tengah */
   </style>
 </head>
 
@@ -40,7 +38,7 @@
   </audio>
 
   <a-scene id="scene">
-    <!-- Kumpulan Gambar -->
+    <!-- Gambar Panorama -->
     <a-assets>
       <img id="pano-1" src="images/pano1.jpg">
       <img id="pano-2" src="images/pano2.jpg">
@@ -57,7 +55,7 @@
       <img id="pano-13" src="images/pano13.jpg">
     </a-assets>
 
-    <!-- Panorama -->
+    <!-- Latar Langit -->
     <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"
       animation__fadein="property: components.material.material.opacity; from: 0; to: 1; dur: 1000; startEvents: fade-in"
       animation__fadeout="property: components.material.material.opacity; from: 1; to: 0; dur: 1000; startEvents: fade-out">
@@ -66,13 +64,36 @@
     <!-- Kamera dan Cursor -->
     <a-entity id="rig">
       <a-entity id="camera" camera look-controls position="0 1.6 0">
-        <a-entity 
-          cursor="fuse: true; fuseTimeout: 1000"
-          position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-          material="color: white; shader: flat; opacity: 0.8">
+        <a-entity cursor="fuse: true; fuseTimeout: 1000"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+                  material="color: white; shader: flat; opacity: 0.8">
         </a-entity>
       </a-entity>
+    </a-entity>
+
+    <!-- Hotspot NEXT (kanan serong) -->
+    <a-entity id="next-spot"
+      geometry="primitive: circle; radius: 0.4"
+      material="color: #E74C3C; opacity: 0.7; shader: flat"
+      rotation="-90 45 0"
+      position="1 -1.5 -2"
+      class="clickable"
+      scale="1 1 1"
+      animation__hover="property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300"
+      animation__unhover="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300">
+    </a-entity>
+
+    <!-- Hotspot PREV (kiri serong) -->
+    <a-entity id="prev-spot"
+      geometry="primitive: circle; radius: 0.4"
+      material="color: #3498DB; opacity: 0.7; shader: flat"
+      rotation="-90 -45 0"
+      position="-1 -1.5 -2"
+      class="clickable"
+      scale="1 1 1"
+      animation__hover="property: scale; to: 1.3 1.3 1.3; startEvents: mouseenter; dur: 300"
+      animation__unhover="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 300">
     </a-entity>
   </a-scene>
 
@@ -85,49 +106,22 @@
 
     let currentIndex = 0;
     const sky = document.querySelector('#panorama-sky');
-    const camera = document.querySelector('#camera');
 
-    function changePanorama(index) {
+    function setPanorama(index) {
       if (index < 0) index = panoramas.length - 1;
       if (index >= panoramas.length) index = 0;
       currentIndex = index;
-
       sky.setAttribute('fade-transition', { to: panoramas[currentIndex] });
     }
 
-    // --- Deteksi arah pandang ---
-    let lastYaw = 0;
-    let debounce = false;
+    // Event ketika kursor diarahkan ke hotspot
+    document.querySelector('#next-spot').addEventListener('mouseenter', () => {
+      setPanorama(currentIndex + 1);
+    });
 
-    function getYaw(rotation) {
-      let yaw = rotation.y % 360;
-      if (yaw < 0) yaw += 360;
-      return yaw;
-    }
-
-    function checkDirection() {
-      const rotation = camera.object3D.rotation;
-      const yaw = THREE.MathUtils.radToDeg(rotation.y);
-      const delta = yaw - lastYaw;
-
-      // Batas rotasi signifikan untuk pindah panorama
-      if (!debounce) {
-        if (delta > 25) { // geser ke kanan
-          changePanorama(currentIndex + 1);
-          debounce = true;
-          setTimeout(() => debounce = false, 3000);
-        } else if (delta < -25) { // geser ke kiri
-          changePanorama(currentIndex - 1);
-          debounce = true;
-          setTimeout(() => debounce = false, 3000);
-        }
-      }
-
-      lastYaw = yaw;
-    }
-
-    // Jalankan pengecekan setiap sedikit waktu
-    setInterval(checkDirection, 500);
+    document.querySelector('#prev-spot').addEventListener('mouseenter', () => {
+      setPanorama(currentIndex - 1);
+    });
   </script>
 </body>
 </html>
