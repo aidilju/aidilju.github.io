@@ -1,102 +1,133 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="id">
 <head>
-    <title>Galeri Panorama 360 VR</title>
-    <meta name="description" content="Tugas VR dengan 13 Panorama">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Galeri Panorama 360 VR</title>
+  <meta name="description" content="Tugas VR dengan 13 Panorama">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <!-- Efek Fade -->
+  <script>
+    AFRAME.registerComponent('fade-transition', {
+      schema: {
+        to: {type: 'string'}
+      },
+      init: function() {
+        const el = this.el;
+        const data = this.data;
+        el.emit('fade-out');
+        setTimeout(() => {
+          el.setAttribute('src', data.to);
+          el.emit('fade-in');
+        }, 1000); // Durasi fade-out sebelum ganti panorama
+      }
+    });
+  </script>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+    .a-canvas { cursor: crosshair; } /* tampilkan titik tengah */
+  </style>
 </head>
 
 <body>
-    <audio controls autoplay hidden>
-        <source src="sound/Angin_Mamiri.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+  <!-- Musik Latar -->
+  <audio autoplay loop hidden>
+    <source src="sound/Angin_Mamiri.mp3" type="audio/mpeg">
+  </audio>
 
-    <a-scene id="scene">
-        <a-assets>
-            <img id="pano-1" src="images/pano1.jpg" crossorigin="anonymous">
-            <img id="pano-2" src="images/pano2.jpg" crossorigin="anonymous">
-            <img id="pano-3" src="images/pano3.jpg" crossorigin="anonymous">
-            <img id="pano-4" src="images/pano4.jpg" crossorigin="anonymous">
-            <img id="pano-5" src="images/pano5.jpg" crossorigin="anonymous">
-            <img id="pano-6" src="images/pano6.jpg" crossorigin="anonymous">
-            <img id="pano-7" src="images/pano7.jpg" crossorigin="anonymous">
-            <img id="pano-8" src="images/pano8.jpg" crossorigin="anonymous">
-            <img id="pano-9" src="images/pano9.jpg" crossorigin="anonymous">
-            <img id="pano-10" src="images/pano10.jpg" crossorigin="anonymous">
-            <img id="pano-11" src="images/pano11.jpg" crossorigin="anonymous">
-            <img id="pano-12" src="images/pano12.jpg" crossorigin="anonymous">
-            <img id="pano-13" src="images/pano13.jpg" crossorigin="anonymous">
-        </a-assets>
+  <a-scene id="scene">
+    <!-- Kumpulan Gambar -->
+    <a-assets>
+      <img id="pano-1" src="images/pano1.jpg">
+      <img id="pano-2" src="images/pano2.jpg">
+      <img id="pano-3" src="images/pano3.jpg">
+      <img id="pano-4" src="images/pano4.jpg">
+      <img id="pano-5" src="images/pano5.jpg">
+      <img id="pano-6" src="images/pano6.jpg">
+      <img id="pano-7" src="images/pano7.jpg">
+      <img id="pano-8" src="images/pano8.jpg">
+      <img id="pano-9" src="images/pano9.jpg">
+      <img id="pano-10" src="images/pano10.jpg">
+      <img id="pano-11" src="images/pano11.jpg">
+      <img id="pano-12" src="images/pano12.jpg">
+      <img id="pano-13" src="images/pano13.jpg">
+    </a-assets>
 
-        <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"></a-sky>
+    <!-- Panorama -->
+    <a-sky id="panorama-sky" src="#pano-1" rotation="0 -90 0"
+      animation__fadein="property: components.material.material.opacity; from: 0; to: 1; dur: 1000; startEvents: fade-in"
+      animation__fadeout="property: components.material.material.opacity; from: 1; to: 0; dur: 1000; startEvents: fade-out">
+    </a-sky>
 
-        <a-entity id="rig">
-            <a-entity camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
-            </a-entity>
-            <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left">
-            </a-entity>
-            <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right">
-            </a-entity>
+    <!-- Kamera dan Cursor -->
+    <a-entity id="rig">
+      <a-entity id="camera" camera look-controls position="0 1.6 0">
+        <a-entity 
+          cursor="fuse: true; fuseTimeout: 1000"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: white; shader: flat; opacity: 0.8">
         </a-entity>
-    </a-scene>
+      </a-entity>
+    </a-entity>
+  </a-scene>
 
-    <script>
-        const panoramas = [
-            '#pano-1', '#pano-2', '#pano-3', '#pano-4', '#pano-5',
-            '#pano-6', '#pano-7', '#pano-8', '#pano-9', '#pano-10',
-            '#pano-11', '#pano-12', '#pano-13'
-        ];
+  <script>
+    const panoramas = [
+      '#pano-1', '#pano-2', '#pano-3', '#pano-4', '#pano-5',
+      '#pano-6', '#pano-7', '#pano-8', '#pano-9', '#pano-10',
+      '#pano-11', '#pano-12', '#pano-13'
+    ];
 
-        // DIUBAH: Disesuaikan agar sinkron dengan <a-sky> di HTML
-        let currentIndex = 0;
+    let currentIndex = 0;
+    const sky = document.querySelector('#panorama-sky');
+    const camera = document.querySelector('#camera');
 
-        // Fungsi untuk ganti gambar (tidak berubah)
-        function setPanorama(index) {
-            if (index < 0) {
-                index = panoramas.length - 1;
-            } else if (index >= panoramas.length) {
-                index = 0;
-            }
-            currentIndex = index;
-            const sky = document.querySelector('#panorama-sky');
-            const newImageSrc = panoramas[currentIndex];
-            console.log(`Mengganti ke gambar: ${newImageSrc}`);
-            sky.setAttribute('src', newImageSrc);
+    function changePanorama(index) {
+      if (index < 0) index = panoramas.length - 1;
+      if (index >= panoramas.length) index = 0;
+      currentIndex = index;
+
+      sky.setAttribute('fade-transition', { to: panoramas[currentIndex] });
+    }
+
+    // --- Deteksi arah pandang ---
+    let lastYaw = 0;
+    let debounce = false;
+
+    function getYaw(rotation) {
+      let yaw = rotation.y % 360;
+      if (yaw < 0) yaw += 360;
+      return yaw;
+    }
+
+    function checkDirection() {
+      const rotation = camera.object3D.rotation;
+      const yaw = THREE.MathUtils.radToDeg(rotation.y);
+      const delta = yaw - lastYaw;
+
+      // Batas rotasi signifikan untuk pindah panorama
+      if (!debounce) {
+        if (delta > 25) { // geser ke kanan
+          changePanorama(currentIndex + 1);
+          debounce = true;
+          setTimeout(() => debounce = false, 3000);
+        } else if (delta < -25) { // geser ke kiri
+          changePanorama(currentIndex - 1);
+          debounce = true;
+          setTimeout(() => debounce = false, 3000);
         }
+      }
 
-        // Fungsi simpel untuk panggil "Next"
-        function goNext() {
-            // --- BLOK KODE BARU ---
-            // Cek apakah musik belum berputar
-            if (!isMusicPlaying) {
-                // Ambil 'scene' dan mainkan suaranya
-                const sceneEl = document.querySelector('#scene');
-            }
-            // --- AKHIR BLOK KODE BARU ---
+      lastYaw = yaw;
+    }
 
-            // Pindah ke gambar selanjutnya
-            setPanorama(currentIndex + 1);
-        }
-
-        // Event listener (tidak berubah, semua event akan memanggil goNext)
-        document.addEventListener('DOMContentLoaded', () => {
-            const scene = document.querySelector('#scene');
-            const leftHand = document.querySelector('#left-hand');
-            const rightHand = document.querySelector('#right-hand');
-
-            scene.addEventListener('click', goNext);
-            leftHand.addEventListener('triggerdown', goNext);
-            rightHand.addEventListener('triggerdown', goNext);
-
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight') {
-                    goNext();
-                }
-            });
-        });
-    </script>
+    // Jalankan pengecekan setiap sedikit waktu
+    setInterval(checkDirection, 500);
+  </script>
 </body>
 </html>
