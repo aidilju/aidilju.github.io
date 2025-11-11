@@ -63,6 +63,15 @@ body, html {
     box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
 }
 
+a-scene {
+      width: 100%;
+      height: 100%;
+    }
+
+    a-entity.clickable {
+      cursor: pointer;
+    }
+
 /* Definisi animasi sederhana */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-20px); }
@@ -77,4 +86,5 @@ body, html {
 @media (max-width: 768px) {
     .hero-title { font-size: 2.2rem; }
     .hero-description { font-size: 1rem; }
+
 }
